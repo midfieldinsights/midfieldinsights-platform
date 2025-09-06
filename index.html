@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midfield Insights - Market Research Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <h1>Midfield Insights</h1>
+            <p class="subtitle">Market Research Platform</p>
+            <div class="role-selection">
+                <button class="role-btn" data-role="client">
+                    <h3>Client</h3>
+                    <p>Create projects and manage research</p>
+                </button>
+                <button class="role-btn" data-role="supplier">
+                    <h3>Supplier</h3>
+                    <p>Bid on projects and manage surveys</p>
+                </button>
+                <button class="role-btn" data-role="admin">
+                    <h3>Admin</h3>
+                    <p>Platform administration</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h2>Midfield Insights</h2>
+                <div class="header-actions">
+                    <span id="user-role"></span>
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-content">
+                <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                <button class="nav-btn" data-section="projects">Projects</button>
+                <button class="nav-btn" data-section="vendors">Vendors</button>
+                <button class="nav-btn" data-section="surveys">Surveys</button>
+                <button class="nav-btn" data-section="reports">Reports</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Active Projects</h3>
+                        <div class="metric" id="active-projects">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Total Responses</h3>
+                        <div class="metric" id="total-responses">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Completion Rate</h3>
+                        <div class="metric" id="completion-rate">0%</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Active Vendors</h3>
+                        <div class="metric" id="active-vendors">0</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="responseChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects-section" class="content-section">
+                <div class="section-header">
+                    <h2>Projects</h2>
+                    <button id="create-project-btn" class="btn btn-primary">Create Project</button>
+                </div>
+                <div id="projects-list" class="projects-grid"></div>
+            </section>
+
+            <!-- Vendors Section -->
+            <section id="vendors-section" class="content-section">
+                <div class="section-header">
+                    <h2>Vendors</h2>
+                    <button id="add-vendor-btn" class="btn btn-primary">Add Vendor</button>
+                </div>
+                <div id="vendors-list" class="vendors-grid"></div>
+            </section>
+
+            <!-- Surveys Section -->
+            <section id="surveys-section" class="content-section">
+                <h2>Survey Management</h2>
+                <div id="surveys-list" class="surveys-grid"></div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section">
+                <h2>Reports & Analytics</h2>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Project Performance</h3>
+                        <canvas id="projectChart"></canvas>
+                    </div>
+                    <div class="report-card">
+                        <h3>Vendor Performance</h3>
+                        <canvas id="vendorChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Project Modal -->
+    <div id="project-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Project</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="project-form" class="modal-body">
+                <div class="form-group">
+                    <label>Project Title</label>
+                    <input type="text" id="project-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="project-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Target Audience</label>
+                    <input type="text" id="project-audience">
+                </div>
+                <div class="form-group">
+                    <label>Sample Size</label>
+                    <input type="number" id="project-sample-size" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Budget ($)</label>
+                    <input type="number" id="project-budget" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Deadline</label>
+                    <input type="date" id="project-deadline">
+                </div>
+                <div class="form-group">
+                    <label>Survey Link</label>
+                    <input type="url" id="project-survey-link" placeholder="https://surveys.midfieldinsights.com/your-survey">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Vendor Modal -->
+    <div id="vendor-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Vendor</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="vendor-form" class="modal-body">
+                <div class="form-group">
+                    <label>Vendor Name</label>
+                    <input type="text" id="vendor-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Email</label>
+                    <input type="email" id="vendor-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Person</label>
+                    <input type="text" id="vendor-contact">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="vendor-phone">
+                </div>
+                <div class="form-group">
+                    <label>Specialty</label>
+                    <input type="text" id="vendor-specialty">
+                </div>
+                <div class="form-group">
+                    <label>Panel Size</label>
+                    <input type="number" id="vendor-panel-size" min="0">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Vendor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div id="project-details-modal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Project Details</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="project-details-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
